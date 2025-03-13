@@ -1,0 +1,14 @@
+id,name,email,age,subscription_type,signup_date,last_login
+1,John Smith,john.smith@example.com,34,premium,2023-11-15,2024-03-10
+2,Sarah Johnson,sarah.j@example.com,29,basic,2024-01-05,2024-03-12
+3,Michael Brown,mbrown@example.com,42,premium,2023-08-22,2024-03-08
+4,Emily Davis,emily.davis@example.com,31,basic,2023-12-10,2024-03-11
+5,Robert Wilson,rwilson@example.com,38,premium,2023-10-01,2024-03-09
+6,Jennifer Lee,jlee@example.com,27,free,2024-02-15,2024-03-12
+7,David Martinez,dmartinez@example.com,45,premium,2023-07-19,2024-03-07
+8,Lisa Thompson,lisa.t@example.com,33,basic,2024-01-30,2024-03-10
+9,James Anderson,janderson@example.com,39,free,2024-02-28,2024-03-13
+10,Patricia Garcia,pgarcia@example.com,36,premium,2023-09-12,2024-03-11
+
+
+
