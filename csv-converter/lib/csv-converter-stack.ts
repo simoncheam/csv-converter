@@ -4,6 +4,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
 import * as path from 'path';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 export class CsvConverterStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -25,6 +26,12 @@ export class CsvConverterStack extends cdk.Stack {
         BUCKET_NAME: dataBucket.bucketName
       }
     });
+
+    // Reference the existing developer group
+    const developerGroup = iam.Group.fromGroupName(this, 'DeveloperGroup', 'developer');
+
+    // Grant put permissions to the developer group
+    dataBucket.grantPut(developerGroup);
 
     // Grant the Lambda function permissions to read from and write to the S3 bucket
     dataBucket.grantReadWrite(processorFunction);
