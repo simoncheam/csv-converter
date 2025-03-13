@@ -1,14 +1,21 @@
-# csv-converter
+# CSV-to-JSON Converter
 
-A serverless application that converts CSV files to JSON format using AWS Lambda and S3.
+A serverless ETL pipeline that automatically converts CSV files to JSON format using AWS Lambda and S3.
+
+## Features
+
+- **Event-driven processing**: CSV uploads automatically trigger Lambda functions
+- **Metadata enrichment**: Adds filename, timestamp, and record count to JSON output
+- **Date-based partitioning**: Organizes processed files by date for efficient retrieval
+- **Least privilege security**: Only developer group members can upload files
+- **Infrastructure as code**: All AWS resources defined and deployed with CDK
 
 ## Tech Stack
 
-- **AWS CDK** - Infrastructure as code
-- **AWS Lambda** - Serverless compute
+- **AWS CDK** - Infrastructure as code (TypeScript)
+- **AWS Lambda** - Serverless compute (Python)
 - **Amazon S3** - Object storage
-- **Python** - Lambda function implementation
-- **Bash** - Utility scripts
+- **IAM** - Access control
 
 ## Getting Started
 
@@ -17,75 +24,39 @@ A serverless application that converts CSV files to JSON format using AWS Lambda
 - AWS CLI configured with appropriate credentials
 - Node.js and npm (for CDK)
 - Python 3.8+ (for Lambda function)
+- IAM group named 'developer' (for access control)
 
 ### Deployment
 
-1. Install dependencies:
-
-```
+```bash
+# Install dependencies
 npm install
-```
 
-2. Deploy the stack:
-
-```
+# Deploy the stack
 npx cdk deploy
 ```
-
-3. Note the bucket name from the stack output
 
 ## Usage
 
 ### Upload a CSV File
 
 ```bash
-# Upload the sample CSV to your application bucket
+# Upload CSV to trigger processing
 aws s3 cp sample.csv s3://YOUR_BUCKET_NAME/uploads/sample.csv
-```
-
-### Check Processing Results
-
-```bash
-# List processed files
-aws s3 ls s3://YOUR_BUCKET_NAME/processed/
-
-# List files for a specific date
-aws s3 ls s3://YOUR_BUCKET_NAME/processed/YYYY-MM-DD/
 ```
 
 ### Download Processed JSON
 
-#### Using the download script
-
-We provide a convenient script to download processed JSON files:
-
 ```bash
-# Basic usage
+# Using the provided script
 ./download-json.sh YOUR_BUCKET_NAME [DATE] [FILENAME]
-
-# Examples:
-# Download with default date (today) and filename (sample)
-./download-json.sh YOUR_BUCKET_NAME
-
-# Download with specific date
-./download-json.sh YOUR_BUCKET_NAME 2024-03-13
-
-# Download with specific date and filename
-./download-json.sh YOUR_BUCKET_NAME 2024-03-13 myfile
 ```
 
-The script will:
+## Security
 
-- Create a local directory structure in `downloads/processed/DATE/`
-- Download the JSON file from S3
-- Provide feedback on success or failure
-
-#### Using AWS CLI directly
-
-```bash
-# Download a specific JSON file
-aws s3 cp s3://YOUR_BUCKET_NAME/processed/YYYY-MM-DD/FILENAME.json .
-```
+- Only members of the 'developer' IAM group can upload files
+- Lambda function has specific read/write permissions
+- All other users are denied upload access
 
 ## How It Works
 
