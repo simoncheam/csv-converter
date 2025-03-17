@@ -1,22 +1,30 @@
 import * as cdk from 'aws-cdk-lib';
-import { Construct } from 'constructs';
-import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
+import { Construct } from 'constructs';
 import * as path from 'path';
-import * as iam from 'aws-cdk-lib/aws-iam';
+
+import { SecureBucket } from './constructs/secure-bucket';
 
 export class CsvConverterStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Create S3 bucket to store CSV files and processed JSON
-    const dataBucket = new s3.Bucket(this, 'DataBucket', {
-      removalPolicy: cdk.RemovalPolicy.DESTROY, // NOT for production
-      autoDeleteObjects: true                    // NOT for production
-    });
 
-    // Create Lambda function that will process the CSV files
+    // create s3 bucket using the secure bucket construct
+
+    const dataBucket = new SecureBucket(this, 'DataBucket', {
+
+      bucketName: `csv-data-${this.account}-${this.region}`,
+      environment: 'dev',
+      groupName: 'developer',
+      accessLevel: 'fullAccess',
+      autoDeleteObjects: true,
+
+    }).bucket;
+
+
     const processorFunction = new lambda.Function(this, 'CsvProcessor', {
       runtime: lambda.Runtime.PYTHON_3_9,
       code: lambda.Code.fromAsset(path.join(__dirname, '../lambda/converter')),
@@ -27,11 +35,6 @@ export class CsvConverterStack extends cdk.Stack {
       }
     });
 
-    // Reference the existing developer group
-    const developerGroup = iam.Group.fromGroupName(this, 'DeveloperGroup', 'developer');
-
-    // Grant put permissions to the developer group
-    dataBucket.grantPut(developerGroup);
 
     // Grant the Lambda function permissions to read from and write to the S3 bucket
     dataBucket.grantReadWrite(processorFunction);
