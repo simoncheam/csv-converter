@@ -76,9 +76,6 @@ export class SecureBucket extends Construct {
     }
 
     if (props.groupName && actions.length > 0) {
-      console.log("🚀 ~ SecureBucket ~ constructor ~ actions:")
-      console.log(actions)
-
       this.addGroupAccess(props.groupName, actions);
     }
 

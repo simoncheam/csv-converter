@@ -48,15 +48,21 @@ aws s3 cp sample.csv s3://YOUR_BUCKET_NAME/uploads/sample.csv
 ### Download Processed JSON
 
 ```bash
-# Using the provided script
+# Using the provided script from the root directory
 ./download-json.sh YOUR_BUCKET_NAME [DATE] [FILENAME]
 ```
 
 ## Security
 
-- Only members of the 'developer' IAM group can upload files
+- Only members of the 'developer' IAM group can upload files (using IAM service principal with conditions)
 - Lambda function has specific read/write permissions
 - All other users are denied upload access
+
+## Implementation Notes
+
+- Uses IAM service principal with conditions for group access instead of direct group ARNs
+- This approach resolves the "Invalid principal in policy" error that can occur with direct group references
+- Follows AWS security best practices for S3 bucket policies
 
 ## How It Works
 
